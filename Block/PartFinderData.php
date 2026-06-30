@@ -136,6 +136,18 @@ class PartFinderData extends Template
         );
         if ($compatAttrId <= 0) return ['makes' => [], 'parts' => []];
 
+        // Step 1b: canonical Make/Model names from the source tables. The
+        // *_name fields denormalised into vehicle_compat_data are left EMPTY by
+        // admin product-form saves (the form has no JS to backfill them), so we
+        // resolve names by id here instead of trusting the stored copy. Falls
+        // back to the stored name only when a table row is missing.
+        $makeNameMap  = $conn->fetchPairs(
+            "SELECT make_id, name FROM " . $this->resource->getTableName('etechflow_vehicle_make')
+        );
+        $modelNameMap = $conn->fetchPairs(
+            "SELECT model_id, name FROM " . $this->resource->getTableName('etechflow_vehicle_model')
+        );
+
         // Step 2: parts_required option map (option_id => label)
         $partLabels = [];
         if ($partsAttrId > 0) {
@@ -175,10 +187,11 @@ class PartFinderData extends Template
             foreach ($decoded as $entry) {
                 if (!is_array($entry)) continue;
                 $makeId   = (int)($entry['make_id'] ?? 0);
-                $makeName = (string)($entry['make_name'] ?? '');
                 $modelId  = (int)($entry['model_id'] ?? 0);
-                $modelName = (string)($entry['model_name'] ?? '');
                 if ($makeId <= 0 || $modelId <= 0) continue;
+                // Authoritative name from the table; stored *_name is only a fallback.
+                $makeName  = (string)($makeNameMap[$makeId]   ?? ($entry['make_name']  ?? ''));
+                $modelName = (string)($modelNameMap[$modelId] ?? ($entry['model_name'] ?? ''));
 
                 if (!isset($makes[$makeId])) {
                     $makes[$makeId] = ['name' => $makeName, 'models' => []];

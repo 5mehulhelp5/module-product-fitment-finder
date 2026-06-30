@@ -9,6 +9,11 @@
         <attribute name="class" value="catalog-category-view"/>
 
         <referenceContainer name="sidebar.main">
+            <block class="ETechFlow\ProductFitmentFinder\Block\Widget\PartFinder"
+                   name="vehiclecompat.find.form"
+                   template="ETechFlow_ProductFitmentFinder::partfinder/widget.phtml"
+                   before="vehiclecompat.sidebar.summary"
+                   cacheable="false"/>
             <block class="ETechFlow\ProductFitmentFinder\Block\FilterChips"
                    name="vehiclecompat.sidebar.summary"
                    template="ETechFlow_ProductFitmentFinder::find/sidebar.phtml"

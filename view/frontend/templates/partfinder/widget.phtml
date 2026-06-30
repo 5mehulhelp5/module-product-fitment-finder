@@ -1,0 +1,36 @@
+<?php
+/**
+ * Host wrapper for the shared Find-Your-Parts form fragment.
+ *
+ * Provides the Alpine x-data scope (the vehicleCompatPartFinder factory is
+ * loaded globally by view/frontend/layout/default.xml) and the shared CSS,
+ * then INCLUDES partfinder/form.phtml so the form markup stays a single source
+ * of truth. The included fragment runs in this scope, so $block (the PartFinder
+ * host, which exposes getMakeLabel()/getFindButtonText()/… ) and $escaper are
+ * available to it.
+ *
+ * @var \ETechFlow\ProductFitmentFinder\Block\Widget\PartFinder $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+$findUrl = $block->getFindUrl();
+$vcSize  = (string) ($block->getData('vc_size') ?: 'md');
+?>
+<?php /* Shared combobox CSS — pure static <style>, no dynamic content. */ ?>
+<?php include $block->getTemplateFile('ETechFlow_ProductFitmentFinder::partfinder/styles.phtml'); ?>
+<div class="vc-partfinder vc-partfinder--<?= $escaper->escapeHtmlAttr($vcSize) ?>"
+     x-data="vehicleCompatPartFinder('<?= $escaper->escapeJs($findUrl) ?>')">
+    <?php include $block->getTemplateFile('ETechFlow_ProductFitmentFinder::partfinder/form.phtml'); ?>
+</div>
+<style>
+    .vc-partfinder { max-width: 360px; }
+    .vc-partfinder .vc-actions { margin-top: .25rem; }
+    .vc-partfinder .vc-save-selection {
+        display: flex; align-items: center; justify-content: center; gap: .4rem;
+        width: 100%; margin-top: .4rem; padding: .55rem; background: #fff;
+        border: 1px solid #d1d5db; border-radius: .45rem; color: #374151;
+        font-size: 12.5px; font-weight: 700; cursor: pointer; font-family: inherit;
+    }
+    .vc-partfinder .vc-save-selection:hover { background: #f9fafb; }
+    /* sidebar context: let the form fill the column */
+    .sidebar .vc-partfinder { max-width: none; margin-bottom: 14px; }
+</style>

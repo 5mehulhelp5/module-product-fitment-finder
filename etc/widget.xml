@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<widgets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Widget:etc/widget.xsd">
+    <widget id="etechflow_productfitmentfinder_partfinder"
+            class="ETechFlow\ProductFitmentFinder\Block\Widget\PartFinder"
+            is_email_compatible="false">
+        <label translate="true">Part Finder — Find Your Parts</label>
+        <description translate="true">Make / Model / Year / Part search form. Drop it into the header, home page, a CMS block, or any page — picking a vehicle sends the customer to the Find page with the matching products.</description>
+        <parameters>
+            <parameter name="vc_size" xsi:type="select" required="false" visible="true">
+                <label translate="true">Field size</label>
+                <options>
+                    <option name="md" value="md" selected="true">
+                        <label translate="true">Normal</label>
+                    </option>
+                    <option name="sm" value="sm">
+                        <label translate="true">Compact</label>
+                    </option>
+                </options>
+            </parameter>
+        </parameters>
+    </widget>
+</widgets>
