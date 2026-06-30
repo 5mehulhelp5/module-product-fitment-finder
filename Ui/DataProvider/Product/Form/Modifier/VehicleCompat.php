@@ -294,11 +294,21 @@ class VehicleCompat extends AbstractModifier
                     'config' => [
                         'componentType' => Field::NAME,
                         'formElement'   => Select::NAME,
-                        'component'     => 'ETechFlow_ProductFitmentFinder/js/form/element/model-select',
                         'dataType'      => Number::NAME,
                         'label'         => __('Model'),
                         'dataScope'     => 'model_id',
-                        'options'       => $this->modelSource->toOptionArray(),
+                        // Native Magento select, fully populated with composite
+                        // "Make – Model" labels. There is deliberately NO custom
+                        // cascade component: a custom component that wipes its own
+                        // options and rebuilds them per-row from the UI registry
+                        // mis-times inside dynamicRows record clones, leaving the
+                        // dropdown empty (won't open) AND a saved model_id with no
+                        // option to display (saved fitment row renders blank).
+                        // A plain, always-populated native select can't fail that
+                        // way: it always opens, and any saved model_id resolves to
+                        // its option so the saved Make/Model/Year shows on edit.
+                        // The make is in the label, so the Make column stays clear.
+                        'options'       => $this->buildModelOptions(),
                         // Model is optional: a Make-only fitment is valid and
                         // persists (see JsonBackend). Requiring it here blocked
                         // the whole product save whenever the Model wasn't set.
@@ -307,6 +317,33 @@ class VehicleCompat extends AbstractModifier
                 ],
             ],
         ];
+    }
+
+    /**
+     * Model options for the admin form, with composite "Make – Model" labels so
+     * the unfiltered list stays unambiguous. Keeps make_id/make_name on each
+     * option for any downstream use.
+     *
+     * @return array<int,array<string,mixed>>
+     */
+    private ?array $modelOptions = null;
+    private function buildModelOptions(): array
+    {
+        if ($this->modelOptions !== null) {
+            return $this->modelOptions;
+        }
+        $options = [];
+        foreach ($this->modelSource->toOptionArray() as $opt) {
+            $makeName  = (string)($opt['make_name'] ?? '');
+            $modelName = (string)($opt['label'] ?? '');
+            $options[] = [
+                'value'     => $opt['value'] ?? '',
+                'label'     => $makeName !== '' ? $makeName . ' – ' . $modelName : $modelName,
+                'make_id'   => (int)($opt['make_id'] ?? 0),
+                'make_name' => $makeName,
+            ];
+        }
+        return $this->modelOptions = $options;
     }
 
     private function yearsField(): array

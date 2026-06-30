@@ -18,6 +18,19 @@ class JsonBackend extends AbstractBackend
         $code = $this->getAttribute()->getAttributeCode();
         $value = $object->getData($code);
 
+        // The admin dynamicRows grid submits a DOUBLED shape: its authoritative
+        // rows are nested one level under the field name itself, e.g.
+        //   ['0' => <stale modifyData seed>, 'vehicle_compat_data' => [<real rows>]]
+        // This is Magento's dynamic-rows recordData binding
+        // ('${ $.provider }:${ $.dataScope }.${ $.index }') appending its own index
+        // (the node key) to the scope — unavoidable from the form config. Unwrap it
+        // here so we persist the grid's real export instead of the stale seed, which
+        // silently kept the old value on every admin save. Idempotent for the clean
+        // (programmatic / API) shape, which has no such nested key.
+        if (is_array($value) && isset($value[$code]) && is_array($value[$code])) {
+            $value = $value[$code];
+        }
+
         if (is_array($value)) {
             $rows = $this->normalizeFlat($value);
             $object->setData($code, $rows ? json_encode($rows, JSON_UNESCAPED_UNICODE) : null);
