@@ -3,7 +3,7 @@
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
     <menu>
         <add id="ETechFlow_ProductFitmentFinder::root"
-             title="Vehicle Compatibility"
+             title="Product Fitment Finder"
              module="ETechFlow_ProductFitmentFinder"
              sortOrder="80"
              parent="Magento_Catalog::catalog"

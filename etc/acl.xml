@@ -5,7 +5,7 @@
         <resources>
             <resource id="Magento_Backend::admin">
                 <resource id="Magento_Catalog::catalog">
-                    <resource id="ETechFlow_ProductFitmentFinder::root" title="Vehicle Compatibility" sortOrder="80">
+                    <resource id="ETechFlow_ProductFitmentFinder::root" title="Product Fitment Finder" sortOrder="80">
                         <resource id="ETechFlow_ProductFitmentFinder::make"   title="Manage Makes"   sortOrder="10"/>
                         <resource id="ETechFlow_ProductFitmentFinder::model"  title="Manage Models"  sortOrder="20"/>
                         <resource id="ETechFlow_ProductFitmentFinder::config" title="Configuration"  sortOrder="30"/>

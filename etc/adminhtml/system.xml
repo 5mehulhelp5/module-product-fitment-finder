@@ -12,7 +12,7 @@
                  showInDefault="1"
                  showInWebsite="1"
                  showInStore="1">
-            <label>Vehicle Compatibility</label>
+            <label>Product Fitment Finder</label>
             <tab>etechflow</tab>
             <resource>ETechFlow_ProductFitmentFinder::config</resource>
 
