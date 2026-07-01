@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ETechFlow\ProductFitmentFinder\Block;
 
+use ETechFlow\ProductFitmentFinder\Model\Config;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\View\Element\Template;
@@ -17,16 +18,30 @@ class FilterChips extends Template
 {
     private RequestInterface $request;
     private ResourceConnection $resource;
+    private Config $config;
 
     public function __construct(
         Context $context,
         RequestInterface $request,
         ResourceConnection $resource,
+        Config $config,
         array $data = []
     ) {
         parent::__construct($context, $data);
         $this->request  = $request;
         $this->resource = $resource;
+        $this->config   = $config;
+    }
+
+    /**
+     * Configurable "no filters" message for the Find-page sidebar panel.
+     * sidebar.phtml renders it in the empty-state branch; without this method the
+     * template's $block->getSidebarNoFilters() call fell through to Magento's
+     * magic getData() and returned '' — so the v1.2.1 field never showed.
+     */
+    public function getSidebarNoFilters(): string
+    {
+        return $this->config->getSidebarNoFilters();
     }
 
     public function hasAnyFilter(): bool
@@ -76,7 +91,14 @@ class FilterChips extends Template
 
     protected function _toHtml()
     {
-        if (!$this->hasAnyFilter()) return '';
+        // The category-page chips bar self-hides when no filters are active (no
+        // point showing an empty bar on every category). The Find-page sidebar
+        // summary, however, sets show_when_empty="true" so it always renders its
+        // "Your Selection" panel — that's where the configurable
+        // sidebar_no_filters message ("No filters active.") is meant to appear.
+        if (!$this->hasAnyFilter() && !$this->getData('show_when_empty')) {
+            return '';
+        }
         return parent::_toHtml();
     }
 }

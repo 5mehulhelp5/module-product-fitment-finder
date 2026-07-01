@@ -2,7 +2,7 @@
     "name": "etechflow/module-product-fitment-finder",
     "description": "Universal Product Fitment Finder for Magento 2 \u2014 Make/Model/Year/Part filtering on any fitment domain (automotive, motorcycle, marine, RV, phone cases, watches, appliance parts, anywhere a customer asks \"will this fit my X?\"). Admin-configurable labels + URL prefix so the same module rebrands to any merchant domain. Includes PDP fitment badge, SEO URLs, customer garage with cross-device sync, OEM/part-number search, and admin tooltips throughout. Theme-agnostic \u2014 Hyv\u00e4, Luma, custom themes. Renamed from \"module-vehicle-compat\" in v2.0.0.",
     "type": "magento2-module",
-    "version": "2.1.5",
+    "version": "2.1.6",
     "license": "proprietary",
     "keywords": [
         "magento",

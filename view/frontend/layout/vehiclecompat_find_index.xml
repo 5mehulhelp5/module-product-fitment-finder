@@ -17,7 +17,13 @@
             <block class="ETechFlow\ProductFitmentFinder\Block\FilterChips"
                    name="vehiclecompat.sidebar.summary"
                    template="ETechFlow_ProductFitmentFinder::find/sidebar.phtml"
-                   cacheable="false"/>
+                   cacheable="false">
+                <arguments>
+                    <!-- always render the "Your Selection" panel, even with no filters,
+                         so the configurable sidebar_no_filters message can show -->
+                    <argument name="show_when_empty" xsi:type="boolean">true</argument>
+                </arguments>
+            </block>
         </referenceContainer>
 
         <referenceContainer name="content">
