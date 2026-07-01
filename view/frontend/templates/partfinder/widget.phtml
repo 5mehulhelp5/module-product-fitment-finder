@@ -25,6 +25,38 @@ $vcHeading = (string) $block->getPartFinderHeading();
         <h3 class="vc-partfinder__heading"><?= $escaper->escapeHtml($vcHeading) ?></h3>
     <?php endif; ?>
     <?php include $block->getTemplateFile('ETechFlow_ProductFitmentFinder::partfinder/form.phtml'); ?>
+
+    <?php /* v1.2.0 — OEM / part-number search, now shown WITH the finder (was
+            Find-page only). Renders only when enabled in admin (Config → OEM /
+            Part-Number Search → Enable). Native GET <form> → submits to the Find
+            page (getFindUrl), which runs the attribute LIKE search. Kept OUTSIDE
+            the Alpine goToFindParts flow on purpose so it works without JS and its
+            query stays shareable/bookmarkable. */ ?>
+    <?php if ($block->isOemSearchEnabled()): $vcOemTip = $block->getOemTooltip(); ?>
+        <div class="vc-oem">
+            <div class="vc-oem-or"><span><?= $escaper->escapeHtml(__('or')) ?></span></div>
+            <form method="get" action="<?= $escaper->escapeUrl($block->getFindUrl()) ?>" class="vc-oem-form">
+                <div class="vc-oem-label"><?= $escaper->escapeHtml($block->getOemSearchLabel()) ?></div>
+                <div class="vc-oem-row">
+                    <input type="text" name="oem"
+                           value="<?= $escaper->escapeHtmlAttr($block->getOemTerm()) ?>"
+                           placeholder="<?= $escaper->escapeHtmlAttr($block->getOemSearchPlaceholder()) ?>"
+                           aria-label="<?= $escaper->escapeHtmlAttr($block->getOemSearchLabel()) ?>"
+                           <?php if ($vcOemTip !== ''): ?>title="<?= $escaper->escapeHtmlAttr($vcOemTip) ?>"<?php endif; ?>
+                           class="vc-oem-input" maxlength="64" autocomplete="off">
+                    <button type="submit" class="vc-oem-btn">
+                        <?= $escaper->escapeHtml($block->getOemButtonText()) ?>
+                    </button>
+                </div>
+                <?php /* preserve any vehicle filters already in the URL (Find page refine) */ ?>
+                <?php foreach (['make_id', 'model_id', 'year', 'part_id'] as $vcK):
+                    $vcV = (string) $block->getRequest()->getParam($vcK);
+                    if ($vcV !== '' && $vcV !== '0'): ?>
+                    <input type="hidden" name="<?= $escaper->escapeHtmlAttr($vcK) ?>" value="<?= $escaper->escapeHtmlAttr($vcV) ?>">
+                <?php endif; endforeach; ?>
+            </form>
+        </div>
+    <?php endif; ?>
 </div>
 <style>
     .vc-partfinder { max-width: 360px; }
@@ -41,6 +73,34 @@ $vcHeading = (string) $block->getPartFinderHeading();
         font-size: 12.5px; font-weight: 700; cursor: pointer; font-family: inherit;
     }
     .vc-partfinder .vc-save-selection:hover { background: #f9fafb; }
+    /* v1.2.0 — OEM / part-number search, shown under the finder */
+    .vc-partfinder .vc-oem { margin-top: .9rem; }
+    .vc-partfinder .vc-oem-or {
+        display: flex; align-items: center; text-align: center; margin: .3rem 0 .7rem;
+        color: #9ca3af; font-size: .7rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .06em;
+    }
+    .vc-partfinder .vc-oem-or::before,
+    .vc-partfinder .vc-oem-or::after { content: ""; flex: 1; height: 1px; background: #e5e7eb; }
+    .vc-partfinder .vc-oem-or span { padding: 0 .6rem; }
+    .vc-partfinder .vc-oem-label {
+        font-size: .8rem; font-weight: 700; color: #374151; margin-bottom: .4rem;
+    }
+    .vc-partfinder .vc-oem-row { display: flex; gap: .4rem; }
+    .vc-partfinder .vc-oem-input {
+        flex: 1; min-width: 0; padding: .55rem .7rem; font-size: .85rem; color: #0E1025;
+        background: #fff; border: 1px solid #d1d5db; border-radius: .45rem; font-family: inherit;
+    }
+    .vc-partfinder .vc-oem-input:focus {
+        outline: none; border-color: var(--vc-accent, #0535F5);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--vc-accent, #0535F5) 18%, transparent);
+    }
+    .vc-partfinder .vc-oem-btn {
+        flex-shrink: 0; padding: .55rem 1rem; font-size: .82rem; font-weight: 700;
+        color: #fff; background: var(--vc-accent, #0535F5); border: 0; border-radius: .45rem;
+        cursor: pointer; font-family: inherit; white-space: nowrap;
+    }
+    .vc-partfinder .vc-oem-btn:hover { filter: brightness(.92); }
     /* sidebar context: let the form fill the column */
     .sidebar .vc-partfinder { max-width: none; margin-bottom: 14px; }
 </style>

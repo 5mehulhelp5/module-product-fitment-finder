@@ -90,6 +90,30 @@ class PartFinder extends Template implements BlockInterface
     public function isSavedGarageEnabled(): bool { return $this->config->isSavedGarageEnabled(); }
     public function getSaveButtonText(): string  { return $this->config->getSaveButtonText(); }
 
+    // v1.2.0 — OEM / part-number search, now surfaced WITH the finder form (it
+    // used to render only on the Find page). All copy is admin-configurable; the
+    // box is a native GET form that submits to getFindUrl() (the Find page), which
+    // runs the actual attribute LIKE search in FindResults.
+    public function isOemSearchEnabled(): bool        { return $this->config->isOemSearchEnabled(); }
+    public function getOemSearchLabel(): string       { return $this->config->getOemSearchLabel(); }
+    public function getOemSearchPlaceholder(): string { return $this->config->getOemSearchPlaceholder(); }
+    public function getOemButtonText(): string        { return $this->config->getOemButtonText(); }
+    public function getOemTooltip(): string           { return $this->config->getOemTooltip(); }
+
+    /**
+     * Current ?oem term (sanitised) so the input keeps its value after a search
+     * on the Find page. Same whitelist as FindResults::getOemTerm().
+     */
+    public function getOemTerm(): string
+    {
+        if (!$this->config->isOemSearchEnabled()) {
+            return '';
+        }
+        $raw   = (string) $this->getRequest()->getParam('oem', '');
+        $clean = preg_replace('/[^a-z0-9\-_.\/]/i', '', $raw) ?: '';
+        return mb_substr($clean, 0, 64);
+    }
+
     /**
      * Admin-controlled placement gate. Layout placements (home / product /
      * product_list) are tagged with a `vc_location` arg and render only when they

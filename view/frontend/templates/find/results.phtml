@@ -35,36 +35,10 @@ $eagerLoadImagesCount = 4;
         <?= $escaper->escapeHtml($block->getFindPageTitle()) ?>
     </h1>
 
-    <?php /* v1.2.0 — OEM/part-number search box. Renders only when the admin
-            has enabled OEM search (Stores → Config → Vehicle Compatibility →
-            OEM / Part-Number Search → Enable). Uses GET so the query stays
-            shareable + cacheable. */ ?>
-    <?php if ($block->isOemSearchEnabled()): $oemTooltip = $block->getOemTooltip(); ?>
-    <form method="get" action="" class="vc-oem-search" style="max-width:480px;margin:0 0 18px;font-family:inherit">
-        <label for="vc-oem-input" style="display:block;font-size:.85rem;font-weight:600;color:#374151;margin-bottom:6px">
-            <?= $escaper->escapeHtml($block->getOemSearchLabel()) ?>
-        </label>
-        <div style="display:flex;gap:8px">
-            <input id="vc-oem-input" type="text" name="oem"
-                   value="<?= $escaper->escapeHtmlAttr($block->getOemTerm()) ?>"
-                   placeholder="<?= $escaper->escapeHtmlAttr($block->getOemSearchPlaceholder()) ?>"
-                   <?php if ($oemTooltip !== ''): ?>title="<?= $escaper->escapeHtmlAttr($oemTooltip) ?>"<?php endif; ?>
-                   style="flex:1;padding:.55rem .8rem;font-size:.9rem;border:1px solid #d1d5db;border-radius:.4rem;font-family:inherit"
-                   maxlength="64"
-                   autocomplete="off">
-            <button type="submit"
-                    style="padding:.55rem 1.1rem;background:var(--vc-accent, #0535F5);color:#fff;border:0;border-radius:.4rem;font-weight:700;font-size:.85rem;cursor:pointer;font-family:inherit">
-                <?= $escaper->escapeHtml($block->getOemButtonText()) ?>
-            </button>
-        </div>
-        <?php /* preserve any vehicle filters when OEM is searched */ ?>
-        <?php foreach (['make_id','model_id','year','part_id'] as $k):
-            $v = (string) $block->getRequest()->getParam($k);
-            if ($v !== '' && $v !== '0'): ?>
-            <input type="hidden" name="<?= $escaper->escapeHtmlAttr($k) ?>" value="<?= $escaper->escapeHtmlAttr($v) ?>">
-        <?php endif; endforeach; ?>
-    </form>
-    <?php endif; ?>
+    <?php /* v1.2.0 OEM/part-number search box MOVED to the Part Finder form
+            (partfinder/widget.phtml) so it travels WITH the finder everywhere it's
+            placed — including this page's sidebar form. Rendering it here too would
+            show two boxes on the Find page. */ ?>
 
     <?php if (!empty($chips)): ?>
         <div style="display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px">
