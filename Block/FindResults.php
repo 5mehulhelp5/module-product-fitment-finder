@@ -151,14 +151,14 @@ class FindResults extends Template
         $partId  = (int) $this->request->getParam('part_id');
         if ($makeId > 0) {
             $n = (string) $conn->fetchOne("SELECT name FROM " . $this->resource->getTableName('etechflow_vehicle_make') . " WHERE make_id = ?", [$makeId]);
-            if ($n) $chips[] = ['label' => __('Make'), 'value' => $n, 'color' => '#0535F5'];
+            if ($n) $chips[] = ['label' => __('Make'), 'value' => $n, 'color' => 'var(--vc-accent, #0535F5)'];
         }
         if ($modelId > 0) {
             $n = (string) $conn->fetchOne("SELECT name FROM " . $this->resource->getTableName('etechflow_vehicle_model') . " WHERE model_id = ?", [$modelId]);
-            if ($n) $chips[] = ['label' => __('Model'), 'value' => $n, 'color' => '#0535F5'];
+            if ($n) $chips[] = ['label' => __('Model'), 'value' => $n, 'color' => 'var(--vc-accent, #0535F5)'];
         }
         if ($year > 0) {
-            $chips[] = ['label' => __('Year'), 'value' => (string)$year, 'color' => '#0535F5'];
+            $chips[] = ['label' => __('Year'), 'value' => (string)$year, 'color' => 'var(--vc-accent, #0535F5)'];
         }
         if ($partId > 0) {
             $n = (string) $conn->fetchOne(
@@ -166,7 +166,7 @@ class FindResults extends Template
                 . $this->resource->getTableName('eav_attribute_option_value') . " v ON v.option_id = o.option_id WHERE o.option_id = ? AND v.store_id = 0",
                 [$partId]
             );
-            if ($n) $chips[] = ['label' => __('Part'), 'value' => $n, 'color' => '#C41818'];
+            if ($n) $chips[] = ['label' => __('Part'), 'value' => $n, 'color' => 'var(--vc-accent, #0535F5)'];
         }
         return $chips;
     }
@@ -300,7 +300,7 @@ class FindResults extends Template
             $url = $baseUrl . $sep . 'p=' . $i;
             $active = ($i === $currentPage);
             $style = $active
-                ? 'background:#0535F5;color:#fff;font-weight:800;border-color:#0535F5'
+                ? 'background:var(--vc-accent,#0535F5);color:#fff;font-weight:800;border-color:var(--vc-accent,#0535F5)'
                 : 'background:#fff;color:#374151';
             $html .= '<a href="' . htmlspecialchars($url, ENT_QUOTES) . '" style="display:inline-flex;align-items:center;justify-content:center;min-width:36px;height:36px;padding:0 10px;border:1px solid #e5e7eb;border-radius:6px;text-decoration:none;font-size:.85rem;font-weight:600;' . $style . '">' . $i . '</a>';
         }

@@ -7,7 +7,7 @@
 ?>
 <style>
 .vc-row{position:relative;display:flex;align-items:center;border:1px solid #E5E7EB;border-radius:0.45rem;margin-bottom:0.4rem;background:#fff;overflow:visible;min-height:38px}
-.vc-row:focus-within{border-color:#0535F5}
+.vc-row:focus-within{border-color:var(--vc-accent,#0535F5)}
 
 .vc-ico-left{position:absolute;left:0.7rem;top:50%;transform:translateY(-50%);pointer-events:none;color:#6B7280;display:flex;align-items:center;justify-content:center;z-index:1}
 .vc-chev{position:absolute;right:0.8rem;top:50%;transform:translateY(-50%);pointer-events:none;color:#6B7280;display:flex;align-items:center;justify-content:center}
@@ -23,12 +23,12 @@
 .vc-search{position:relative;padding:8px;border-bottom:1px solid #F3F4F6;flex-shrink:0}
 .vc-search svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:#9CA3AF;pointer-events:none}
 .vc-search input{width:100%;padding:7px 10px 7px 30px;border:1px solid #E5E7EB;border-radius:6px;font-size:13px;color:#0E1025;outline:none;font-family:inherit;background:#fff}
-.vc-search input:focus{border-color:#0535F5;box-shadow:0 0 0 2px rgba(5,53,245,.15)}
+.vc-search input:focus{border-color:var(--vc-accent,#0535F5);box-shadow:0 0 0 2px color-mix(in srgb, var(--vc-accent,#0535F5) 22%, transparent)}
 
 .vc-list{overflow-y:auto;max-height:260px}
 .vc-opt{padding:0.55rem 0.9rem;font-size:13.5px;color:#0E1025;cursor:pointer;border-bottom:1px solid #F3F4F6}
 .vc-opt:last-child{border-bottom:none}
-.vc-opt:hover{background:#EEF2FF;color:#0535F5}
+.vc-opt:hover{background:color-mix(in srgb, var(--vc-accent,#0535F5) 10%, #fff);color:var(--vc-accent,#0535F5)}
 .vc-empty{padding:0.65rem 0.9rem;font-size:12.5px;color:#9CA3AF;text-align:center}
 
 /* The Find Parts button carries Magento's `action primary` class, so the active

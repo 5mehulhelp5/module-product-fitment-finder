@@ -4,6 +4,36 @@
 // dropdown click triggers an AJAX call that returns only the matching
 // options for that field given the current selections — no preloaded tree,
 // no client-side bidirectional filter logic.
+// Auto-match the finder's accent colour to the active theme: read the computed
+// background of a probe primary button (Luma `.action.primary` / Hyva
+// `.btn-primary`) and expose it as the `--vc-accent` CSS variable, so the chips,
+// dropdown hovers, focus rings, selection dots and the Find button all pick up
+// the theme colour. Falls back to the admin Accent Colour / CSS default when the
+// theme paints no button colour.
+(function () {
+    function themeAccent() {
+        var probe = document.createElement('button');
+        probe.className = 'action primary btn btn-primary';
+        probe.style.cssText = 'position:absolute!important;left:-9999px;top:0;width:1px;height:1px;padding:0;margin:0;border:0;visibility:hidden;pointer-events:none';
+        document.body.appendChild(probe);
+        var bg = window.getComputedStyle(probe).backgroundColor;
+        probe.remove();
+        return (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') ? bg : '';
+    }
+    function applyThemeAccent() {
+        try {
+            var accent = themeAccent();
+            if (!accent) { return; }
+            document.documentElement.style.setProperty('--vc-accent', accent);
+            document.querySelectorAll('.vc-partfinder, .vc-find-page').forEach(function (el) {
+                el.style.setProperty('--vc-accent', accent);
+            });
+        } catch (e) { /* leave the CSS/admin fallback in place */ }
+    }
+    if (document.readyState !== 'loading') { applyThemeAccent(); }
+    else { document.addEventListener('DOMContentLoaded', applyThemeAccent); }
+})();
+
 document.addEventListener('alpine:init', () => {
     if (window.Alpine && !window.Alpine.store('vehicleCompatSel')) {
         window.Alpine.store('vehicleCompatSel', {

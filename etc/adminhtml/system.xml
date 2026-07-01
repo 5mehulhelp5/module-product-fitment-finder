@@ -289,16 +289,6 @@
                         Mixed-case recommended — v1.1.0 shipped all-caps "FIND PARTS" which read shouty.
                     ]]></comment>
                 </field>
-                <field id="find_page_title" translate="label comment tooltip" type="text"
-                       sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Find Page Title</label>
-                    <tooltip>H1 heading on the search results page. Default "Find Your Parts".</tooltip>
-                    <comment><![CDATA[
-                        H1 heading on the search results page. Default: <em>Find Your Parts</em>.
-                        Phone-case shop: <code>Find Your Case</code>. Watch shop:
-                        <code>Find Your Strap</code>. Industrial: <code>Component Finder</code>.
-                    ]]></comment>
-                </field>
                 <field id="part_finder_heading" translate="label comment tooltip" type="text"
                        sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Part Finder Heading</label>

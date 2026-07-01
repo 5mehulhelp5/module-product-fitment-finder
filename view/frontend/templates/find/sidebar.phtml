@@ -5,7 +5,7 @@ $chips = $block->getChips();
 $clearUrl = $block->getClearUrl();
 ?>
 <aside class="vc-side" style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:16px;font-family:inherit;margin-bottom:14px">
-    <h3 style="font-size:.9rem;font-weight:800;color:#0E1025;margin:0 0 12px;padding-bottom:8px;border-bottom:2px solid #C41818;display:inline-block"><?= $escaper->escapeHtml(__('Your Selection')) ?></h3>
+    <h3 style="font-size:.9rem;font-weight:800;color:#0E1025;margin:0 0 12px;padding-bottom:8px;border-bottom:2px solid var(--vc-accent,#0535F5);display:inline-block"><?= $escaper->escapeHtml(__('Your Selection')) ?></h3>
 
     <?php if (empty($chips)): ?>
         <p style="font-size:.78rem;color:#6b7280;margin:0"><?= $escaper->escapeHtml($block->getSidebarNoFilters()) ?></p>

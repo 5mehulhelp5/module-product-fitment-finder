@@ -47,14 +47,14 @@ class FilterChips extends Template
         $partId  = (int) $this->request->getParam('part_id');
         if ($makeId > 0) {
             $n = (string) $conn->fetchOne("SELECT name FROM " . $this->resource->getTableName('etechflow_vehicle_make') . " WHERE make_id = ?", [$makeId]);
-            if ($n) $chips[] = ['label' => __('Make'), 'value' => $n, 'color' => '#0535F5'];
+            if ($n) $chips[] = ['label' => __('Make'), 'value' => $n, 'color' => 'var(--vc-accent, #0535F5)'];
         }
         if ($modelId > 0) {
             $n = (string) $conn->fetchOne("SELECT name FROM " . $this->resource->getTableName('etechflow_vehicle_model') . " WHERE model_id = ?", [$modelId]);
-            if ($n) $chips[] = ['label' => __('Model'), 'value' => $n, 'color' => '#0535F5'];
+            if ($n) $chips[] = ['label' => __('Model'), 'value' => $n, 'color' => 'var(--vc-accent, #0535F5)'];
         }
         if ($year > 0) {
-            $chips[] = ['label' => __('Year'), 'value' => (string)$year, 'color' => '#0535F5'];
+            $chips[] = ['label' => __('Year'), 'value' => (string)$year, 'color' => 'var(--vc-accent, #0535F5)'];
         }
         if ($partId > 0) {
             $n = (string) $conn->fetchOne(
@@ -62,7 +62,7 @@ class FilterChips extends Template
                 . $this->resource->getTableName('eav_attribute_option_value') . " v ON v.option_id = o.option_id WHERE o.option_id = ? AND v.store_id = 0",
                 [$partId]
             );
-            if ($n) $chips[] = ['label' => __('Part'), 'value' => $n, 'color' => '#C41818'];
+            if ($n) $chips[] = ['label' => __('Part'), 'value' => $n, 'color' => 'var(--vc-accent, #0535F5)'];
         }
         return $chips;
     }

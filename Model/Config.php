@@ -271,7 +271,11 @@ class Config
 
     public function getFindPageTitle(?int $storeId = null): string
     {
-        return $this->labelOrDefault(self::XML_PATH_FIND_PAGE_TITLE, 'Find Your Parts', $storeId);
+        // Unified with the Part Finder Heading — the separate "Find Page Title"
+        // admin field was removed as redundant. Fall back to the default heading
+        // when the heading is blank so the results page always has an H1.
+        $heading = $this->getPartFinderHeading($storeId);
+        return $heading !== '' ? $heading : 'Find Your Parts';
     }
 
     /**
