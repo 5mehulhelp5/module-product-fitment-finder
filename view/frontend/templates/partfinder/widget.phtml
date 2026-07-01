@@ -19,6 +19,7 @@ $vcHeading = (string) $block->getPartFinderHeading();
 <?php /* Shared combobox CSS — pure static <style>, no dynamic content. */ ?>
 <?php include $block->getTemplateFile('ETechFlow_ProductFitmentFinder::partfinder/styles.phtml'); ?>
 <div class="vc-partfinder vc-partfinder--<?= $escaper->escapeHtmlAttr($vcSize) ?>"
+     style="--vc-accent:<?= $escaper->escapeHtmlAttr($block->getAccentColour()) ?>"
      x-data="vehicleCompatPartFinder('<?= $escaper->escapeJs($findUrl) ?>')">
     <?php if ($vcHeading !== ''): ?>
         <h3 class="vc-partfinder__heading"><?= $escaper->escapeHtml($vcHeading) ?></h3>

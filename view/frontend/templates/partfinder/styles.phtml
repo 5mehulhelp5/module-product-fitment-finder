@@ -31,8 +31,12 @@
 .vc-opt:hover{background:#EEF2FF;color:#0535F5}
 .vc-empty{padding:0.65rem 0.9rem;font-size:12.5px;color:#9CA3AF;text-align:center}
 
-.vc-submit{display:flex;align-items:center;justify-content:center;gap:0.55rem;width:100%;background:#C41818;color:#fff;padding:0.75rem;font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;border-radius:0.45rem;border:none;cursor:pointer;font-family:inherit;margin-top:0.4rem;box-sizing:border-box;transition:background .15s}
-.vc-submit:hover{background:#A31313}
+/* The Find Parts button carries Magento's `action primary` class, so the active
+   theme (Luma/Hyva/custom) auto-styles it with ITS primary colour. These rules
+   are a fallback (theme rules win on specificity): --vc-accent is set from the
+   admin Accent Colour, defaulting to the eTechFlow blue. */
+.vc-submit{display:flex;align-items:center;justify-content:center;gap:0.55rem;width:100%;background:var(--vc-accent,#0535F5);color:#fff;padding:0.75rem;font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;border-radius:0.45rem;border:none;cursor:pointer;font-family:inherit;margin-top:0.4rem;box-sizing:border-box;transition:filter .15s}
+.vc-submit:hover{filter:brightness(.92)}
 
 [x-cloak]{display:none !important}
 </style>

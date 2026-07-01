@@ -78,6 +78,9 @@ class PartFinder extends Template implements BlockInterface
     /** Heading rendered above the form (admin-configurable; blank = no heading). */
     public function getPartFinderHeading(): string { return $this->config->getPartFinderHeading(); }
 
+    /** Accent colour fallback for themes that don't style the `action primary` button. */
+    public function getAccentColour(): string { return $this->config->getAccentColour(); }
+
     public function getMakeLabel(): string       { return $this->config->getMakeLabel(); }
     public function getModelLabel(): string      { return $this->config->getModelLabel(); }
     public function getYearLabel(): string       { return $this->config->getYearLabel(); }

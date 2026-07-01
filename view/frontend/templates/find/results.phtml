@@ -154,7 +154,7 @@ $eagerLoadImagesCount = 4;
                                         <input type="hidden" name="form_key" value="<?= $escaper->escapeHtmlAttr($block->getFormKey()) ?>">
                                         <input type="hidden" name="product" value="<?= (int) $product->getId() ?>">
                                         <input type="hidden" name="qty" value="1">
-                                        <button type="submit" class="vc-card-cart"><?= $escaper->escapeHtml(__('Add to Cart')) ?></button>
+                                        <button type="submit" class="vc-card-cart action primary"><?= $escaper->escapeHtml(__('Add to Cart')) ?></button>
                                     </form>
                                 </div>
                             <?php endif; ?>
