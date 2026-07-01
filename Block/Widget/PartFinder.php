@@ -90,6 +90,16 @@ class PartFinder extends Template implements BlockInterface
     public function isSavedGarageEnabled(): bool { return $this->config->isSavedGarageEnabled(); }
     public function getSaveButtonText(): string  { return $this->config->getSaveButtonText(); }
 
+    // v1.2.1 — polish copy consumed by the shared form fragment (form.phtml).
+    // These were exposed only on the orphaned PartFinderData block (never placed
+    // in any layout), so form.phtml fell back to hardcoded __() literals and the
+    // admin overrides did nothing. Wiring them here — the live host block — makes
+    // the "Dropdown Search Placeholder", "No Matches" and "Saved!" fields actually
+    // take effect.
+    public function getNoMatchesText(): string            { return $this->config->getNoMatchesText(); }
+    public function getDropdownSearchPlaceholder(): string { return $this->config->getDropdownSearchPlaceholder(); }
+    public function getSavedFeedback(): string            { return $this->config->getSavedFeedback(); }
+
     // v1.2.0 — OEM / part-number search, now surfaced WITH the finder form (it
     // used to render only on the Find page). All copy is admin-configurable; the
     // box is a native GET form that submits to getFindUrl() (the Find page), which

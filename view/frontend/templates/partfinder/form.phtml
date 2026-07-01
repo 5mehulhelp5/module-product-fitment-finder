@@ -35,11 +35,11 @@ $sm = $vcSize === 'sm';
         <div class="vc-panel" x-cloak>
             <div class="vc-search">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
-                <input type="text" x-ref="searchMake" x-model="queryMake" placeholder="<?= $escaper->escapeHtmlAttr(__('Search…')) ?>" @click.stop>
+                <input type="text" x-ref="searchMake" x-model="queryMake" placeholder="<?= $escaper->escapeHtmlAttr($block->getDropdownSearchPlaceholder()) ?>" @click.stop>
             </div>
             <div class="vc-list">
                 <template x-for="m in visibleMakes" :key="m.id"><div class="vc-opt" @click="pickMake(m.id, m.name)" x-text="m.name"></div></template>
-                <div class="vc-empty" x-show="visibleMakes.length === 0"><?= $escaper->escapeHtml(__('No matches')) ?></div>
+                <div class="vc-empty" x-show="visibleMakes.length === 0"><?= $escaper->escapeHtml($block->getNoMatchesText()) ?></div>
             </div>
         </div>
     </template>
@@ -62,11 +62,11 @@ $sm = $vcSize === 'sm';
         <div class="vc-panel" x-cloak>
             <div class="vc-search">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
-                <input type="text" x-ref="searchModel" x-model="queryModel" placeholder="<?= $escaper->escapeHtmlAttr(__('Search…')) ?>" @click.stop>
+                <input type="text" x-ref="searchModel" x-model="queryModel" placeholder="<?= $escaper->escapeHtmlAttr($block->getDropdownSearchPlaceholder()) ?>" @click.stop>
             </div>
             <div class="vc-list">
                 <template x-for="m in visibleModels" :key="m.id"><div class="vc-opt" @click="pickModel(m.id, m.name)" x-text="m.name"></div></template>
-                <div class="vc-empty" x-show="visibleModels.length === 0"><?= $escaper->escapeHtml(__('No matches')) ?></div>
+                <div class="vc-empty" x-show="visibleModels.length === 0"><?= $escaper->escapeHtml($block->getNoMatchesText()) ?></div>
             </div>
         </div>
     </template>
@@ -89,11 +89,11 @@ $sm = $vcSize === 'sm';
         <div class="vc-panel" x-cloak>
             <div class="vc-search">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
-                <input type="text" x-ref="searchYear" x-model="queryYear" placeholder="<?= $escaper->escapeHtmlAttr(__('Search…')) ?>" @click.stop>
+                <input type="text" x-ref="searchYear" x-model="queryYear" placeholder="<?= $escaper->escapeHtmlAttr($block->getDropdownSearchPlaceholder()) ?>" @click.stop>
             </div>
             <div class="vc-list">
                 <template x-for="y in visibleYears" :key="y"><div class="vc-opt" @click="pickYear(y)" x-text="y"></div></template>
-                <div class="vc-empty" x-show="visibleYears.length === 0"><?= $escaper->escapeHtml(__('No matches')) ?></div>
+                <div class="vc-empty" x-show="visibleYears.length === 0"><?= $escaper->escapeHtml($block->getNoMatchesText()) ?></div>
             </div>
         </div>
     </template>
@@ -116,11 +116,11 @@ $sm = $vcSize === 'sm';
         <div class="vc-panel" x-cloak>
             <div class="vc-search">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
-                <input type="text" x-ref="searchPart" x-model="queryPart" placeholder="<?= $escaper->escapeHtmlAttr(__('Search…')) ?>" @click.stop>
+                <input type="text" x-ref="searchPart" x-model="queryPart" placeholder="<?= $escaper->escapeHtmlAttr($block->getDropdownSearchPlaceholder()) ?>" @click.stop>
             </div>
             <div class="vc-list">
                 <template x-for="p in visibleParts" :key="p.id"><div class="vc-opt" @click="pickPart(p.id, p.name)" x-text="p.name"></div></template>
-                <div class="vc-empty" x-show="visibleParts.length === 0"><?= $escaper->escapeHtml(__('No matches')) ?></div>
+                <div class="vc-empty" x-show="visibleParts.length === 0"><?= $escaper->escapeHtml($block->getNoMatchesText()) ?></div>
             </div>
         </div>
     </template>
@@ -160,7 +160,7 @@ $sm = $vcSize === 'sm';
         </span>
         <span x-show="savedFeedback" x-cloak>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-            <?= $escaper->escapeHtml(__('Saved!')) ?>
+            <?= $escaper->escapeHtml($block->getSavedFeedback()) ?>
         </span>
     </button>
     <?php endif; ?>
