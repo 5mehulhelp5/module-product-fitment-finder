@@ -10,10 +10,19 @@
             on Hyvä, Luma, and any custom theme.
         -->
         <referenceBlock name="product.info.main">
+            <!--
+                Anchor to the "product.info" add-to-cart form block (a guaranteed
+                direct child of product.info.main). The core "product.info.price"
+                container gets relocated under that form block by other layout,
+                so referencing it here crossed parents and Magento rejected the
+                placement ("Broken reference … parents are different"), leaving the
+                badge unrendered. "after=product.info" keeps a same-parent sibling
+                reference so the badge always renders, just below the price/add-to-cart.
+            -->
             <block class="ETechFlow\ProductFitmentFinder\Block\Product\FitmentBadge"
                    name="etechflow.vc.pdp.fitment"
                    template="ETechFlow_ProductFitmentFinder::product/fitment-badge.phtml"
-                   after="product.info.price"/>
+                   after="product.info"/>
             <!--
                 Part Finder form on the product page. Renders only when
                 Part Finder Placement = "Product Page" (gated via vc_location).
