@@ -15,7 +15,7 @@ use Magento\Store\Model\StoreManagerInterface;
  *
  *   isValid() priority:
  *     1. revoked = 1                       → false (portal revoke wins even in dev)
- *     2. production_environment = No       → true (dev bypass)
+ *     2. dev / staging host                → true (unlicensed dev bypass; production hosts never match)
  *     3. SP-XXXX key, portal answers       → portal's answer is final (true/false)
  *     4. SP-XXXX key, portal unreachable   → cached-success grace (48h)
  *     5. otherwise                         → false
@@ -72,6 +72,16 @@ class LicenseValidator
 
         if ($this->isExplicitlyRevoked()) {
             return false;
+        }
+
+        // Dev / staging bypass: localhost, private ranges, *.test/.local,
+        // dev./staging./qa. and *-dev./*-staging. hosts run unlicensed so the team
+        // and Marketplace QA can exercise the module without a paid SP- key.
+        // isDevHost() never matches a real production domain, so a live customer
+        // store still requires a portal-issued licence. Portal revoke (above)
+        // still wins even on a dev host.
+        if ($this->isDevHost()) {
+            return true;
         }
 
         if (!$this->isProductionEnvironment()) {
@@ -326,9 +336,10 @@ class LicenseValidator
     }
 
     /**
-     * Classifies a host as dev/staging. Used ONLY by the admin status banner
-     * for an informational hint — it is deliberately NOT consulted by isValid(),
-     * so it can never grant a licensing bypass. Ships no secret.
+     * Classifies a host as dev/staging. Consulted by isValid() to grant an
+     * unlicensed dev/staging bypass (priority #2) and by the admin status banner.
+     * Only ever matches non-production hosts, so it can never unlock a live
+     * customer domain. Ships no secret.
      */
     public function isDevHost(?string $host = null): bool
     {
@@ -346,6 +357,10 @@ class LicenseValidator
         }
         foreach (['staging.', 'stage.', 'dev.', 'qa.', 'uat.', 'test.', 'preview.', 'sandbox.'] as $p) {
             if (str_starts_with($host, $p)) return true;
+        }
+        // Infix dev markers, e.g. "magento-dev.etechflow.com", "shop-staging.example.com".
+        foreach (['-dev.', '-staging.', '-stage.', '-qa.', '-uat.', '-test.', '-sandbox.'] as $mid) {
+            if (str_contains($host, $mid)) return true;
         }
         foreach (['.magento.cloud', '.magentocloud.com', '.ngrok.io', '.ngrok-free.app', '.ngrok-free.dev', '.loca.lt'] as $s) {
             if (str_ends_with($host, $s)) return true;
