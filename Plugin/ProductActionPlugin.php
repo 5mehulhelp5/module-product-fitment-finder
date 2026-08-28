@@ -29,6 +29,20 @@ class ProductActionPlugin
     public function beforeSave(Product $subject)
     {
         $data = $subject->getData(self::FIELD);
+
+        // The admin dynamicRows grid submits a DOUBLED shape — the authoritative
+        // rows are nested one level under the field name itself:
+        //   ['0' => <stale modifyData seed>, 'vehicle_compat_data' => [<real rows>]]
+        // JsonBackend::beforeSave unwraps the same way. Without this, the loop
+        // below iterates the wrapper keys instead of the real rows, so make_name /
+        // model_name never get enriched and persist EMPTY — which breaks the
+        // storefront fitment badge/finder (they render from make_name/model_name
+        // without joining the vehicle tables). Idempotent for the clean flat /
+        // programmatic (API) shape, which has no such nested key.
+        if (is_array($data) && isset($data[self::FIELD]) && is_array($data[self::FIELD])) {
+            $data = $data[self::FIELD];
+        }
+
         if (!is_array($data)) {
             return null;
         }
