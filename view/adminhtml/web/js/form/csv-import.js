@@ -19,6 +19,7 @@ define([
         defaults: {
             template: 'ETechFlow_ProductFitmentFinder/csv-import',
             importUrl: '',
+            formKey: '',           /* server-injected admin form key (CSRF) */
             dynamicRowsName: '',   /* full UI name of the dynamicRows component */
             tracks: {
                 status:        true,
@@ -82,7 +83,7 @@ define([
 
             var fd = new FormData();
             fd.append('csv', file);
-            fd.append('form_key', window.FORM_KEY || '');
+            fd.append('form_key', this.formKey || window.FORM_KEY || '');
 
             $.ajax({
                 url: this.importUrl,
@@ -103,7 +104,15 @@ define([
                     + (res.createdModels ? ' (+' + res.createdModels + ' new Models)' : '')
                     + (res.rowsSkipped   ? ' — skipped ' + res.rowsSkipped + ' bad row(s).' : '.');
             }).fail(function (xhr) {
-                alertModal({ title: 'Upload failed', content: 'Server returned status ' + xhr.status });
+                /* Log the raw body so a 200-but-unparseable response (stray PHP
+                   output, or an HTML redirect from a rejected form key) is visible. */
+                console.error('[PFF CSV import] status', xhr.status,
+                    '\nresponse:', (xhr.responseText || '').slice(0, 1000));
+                alertModal({
+                    title: 'Upload failed',
+                    content: 'Server returned status ' + xhr.status
+                        + '. See the browser console for the server response.'
+                });
                 self.status = '';
             });
         },

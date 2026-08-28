@@ -7,6 +7,7 @@ use ETechFlow\ProductFitmentFinder\Model\Source\Make;
 use ETechFlow\ProductFitmentFinder\Model\Source\Model as ModelSource;
 use ETechFlow\ProductFitmentFinder\Model\Source\Year;
 use Magento\Backend\Model\UrlInterface;
+use Magento\Framework\Data\Form\FormKey;
 use Magento\Catalog\Model\Locator\LocatorInterface;
 use Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\AbstractModifier;
 use Magento\Ui\Component\Container;
@@ -33,19 +34,22 @@ class VehicleCompat extends AbstractModifier
     private ModelSource $modelSource;
     private Year $yearSource;
     private UrlInterface $urlBuilder;
+    private FormKey $formKey;
 
     public function __construct(
         LocatorInterface $locator,
         Make $makeSource,
         ModelSource $modelSource,
         Year $yearSource,
-        UrlInterface $urlBuilder
+        UrlInterface $urlBuilder,
+        FormKey $formKey
     ) {
         $this->locator     = $locator;
         $this->makeSource  = $makeSource;
         $this->modelSource = $modelSource;
         $this->yearSource  = $yearSource;
         $this->urlBuilder  = $urlBuilder;
+        $this->formKey     = $formKey;
     }
 
     /**
@@ -162,6 +166,12 @@ class VehicleCompat extends AbstractModifier
                         'component'       => 'ETechFlow_ProductFitmentFinder/js/form/csv-import',
                         'template'        => 'ETechFlow_ProductFitmentFinder/csv-import',
                         'importUrl'       => $this->urlBuilder->getUrl('etechflow_vehicle/vehicle/importCsv'),
+                        // Server-rendered form key: window.FORM_KEY is not reliably
+                        // defined on the UI-component product form, so an empty key
+                        // gets the admin POST rejected/redirected (200 + HTML, not
+                        // JSON → "Upload failed, status 200"). Passing it explicitly
+                        // guarantees the CSRF form key is always valid.
+                        'formKey'         => $this->formKey->getFormKey(),
                         'dynamicRowsName' => 'product_form.product_form.' . self::GROUP_NAME . '.' . self::FIELD_NAME,
                         'sortOrder'       => 5,
                     ],
