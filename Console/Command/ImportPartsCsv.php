@@ -129,8 +129,8 @@ class ImportPartsCsv extends Command
             return self::FAILURE;
         }
 
-        // Read header
-        $header = fgetcsv($fh);
+        // Read header (PHP 8.4+: pass $escape explicitly to avoid E_DEPRECATED)
+        $header = fgetcsv($fh, null, ',', '"', '');
         if (!$header) {
             $output->writeln("<error>Empty CSV</error>");
             fclose($fh);
@@ -149,7 +149,7 @@ class ImportPartsCsv extends Command
         }
 
         $rowNum = 1;
-        while (($row = fgetcsv($fh)) !== false) {
+        while (($row = fgetcsv($fh, null, ',', '"', '')) !== false) {
             $rowNum++;
             if (count($row) === 1 && trim((string)$row[0]) === '') continue;
             $totalRows++;
@@ -601,8 +601,11 @@ class ImportPartsCsv extends Command
     private function writeCsv(string $path, array $headers, array $rows): void
     {
         $fp = fopen($path, 'wb');
-        fputcsv($fp, $headers);
-        foreach ($rows as $r) fputcsv($fp, (array)$r);
+        // PHP 8.4+: pass $escape explicitly to avoid the fputcsv() E_DEPRECATED.
+        fputcsv($fp, $headers, ',', '"', '');
+        foreach ($rows as $r) {
+            fputcsv($fp, (array)$r, ',', '"', '');
+        }
         fclose($fp);
     }
 }

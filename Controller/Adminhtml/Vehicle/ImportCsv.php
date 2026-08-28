@@ -63,7 +63,11 @@ class ImportCsv extends Action
         $fh = fopen($files['tmp_name'], 'r');
         if (!$fh) return $result->setData(['error' => 'Could not read uploaded file.']);
 
-        $headerRow = fgetcsv($fh);
+        // PHP 8.4+: the $escape parameter must be passed explicitly or fgetcsv()
+        // emits an E_DEPRECATED notice. In developer mode that notice is printed
+        // into the response body BEFORE this JSON, making it unparseable on the
+        // client ("Upload failed, status 200"). Pass '' (RFC-4180 no-escape).
+        $headerRow = fgetcsv($fh, null, ',', '"', '');
         if (!$headerRow) { fclose($fh); return $result->setData(['error' => 'Empty file.']); }
 
         $headers = array_map(static fn($h) => strtolower(trim((string)$h)), $headerRow);
@@ -97,7 +101,7 @@ class ImportCsv extends Action
         $rowsRead = 0;
         $rowsSkipped = 0;
 
-        while (($row = fgetcsv($fh)) !== false) {
+        while (($row = fgetcsv($fh, null, ',', '"', '')) !== false) {
             $rowsRead++;
             $makeName  = trim((string)($row[$makeIdx] ?? ''));
             $modelName = trim((string)($row[$modelIdx] ?? ''));
