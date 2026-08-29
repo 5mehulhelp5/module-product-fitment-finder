@@ -24,14 +24,14 @@ $vcHeading = (string) $block->getPartFinderHeading();
 <script>window.etechflowPreselect = <?= /* @noEscape */ json_encode($vcPreselect, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;</script>
 <?php endif; ?>
 <?php /* Shared combobox CSS — pure static <style>, no dynamic content. */ ?>
-<?php include $block->getTemplateFile('ETechFlow_ProductFitmentFinder::partfinder/styles.phtml'); ?>
+<?= /* @noEscape */ $block->renderFragment('ETechFlow_ProductFitmentFinder::partfinder/styles.phtml') ?>
 <div class="vc-partfinder vc-partfinder--<?= $escaper->escapeHtmlAttr($vcSize) ?>"
      style="--vc-accent:<?= $escaper->escapeHtmlAttr($block->getAccentColour()) ?>"
      x-data="vehicleCompatPartFinder('<?= $escaper->escapeJs($findUrl) ?>')">
     <?php if ($vcHeading !== ''): ?>
         <h3 class="vc-partfinder__heading"><?= $escaper->escapeHtml($vcHeading) ?></h3>
     <?php endif; ?>
-    <?php include $block->getTemplateFile('ETechFlow_ProductFitmentFinder::partfinder/form.phtml'); ?>
+    <?= /* @noEscape */ $block->renderFragment('ETechFlow_ProductFitmentFinder::partfinder/form.phtml') ?>
 
     <?php /* v1.2.0 — OEM / part-number search, now shown WITH the finder (was
             Find-page only). Renders only when enabled in admin (Config → OEM /

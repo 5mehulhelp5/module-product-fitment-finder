@@ -55,7 +55,7 @@ class ImportCsv extends Action
     {
         $result = $this->jsonFactory->create();
 
-        $files = $_FILES['csv'] ?? null;
+        $files = $this->getRequest()->getFiles('csv');
         if (!$files || empty($files['tmp_name']) || !is_uploaded_file($files['tmp_name'])) {
             return $result->setData(['error' => 'No CSV file uploaded.']);
         }

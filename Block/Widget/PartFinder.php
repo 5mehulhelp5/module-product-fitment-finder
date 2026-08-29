@@ -42,6 +42,21 @@ class PartFinder extends Template implements BlockInterface
     }
 
     /**
+     * Render a sibling partial (the shared styles / form fragment) in this
+     * block's own context. Used by widget.phtml instead of a raw include(),
+     * which the Marketplace security pre-check (Magento2.Security.IncludeFile)
+     * forbids. fetchView() exposes $block (= $this) and $escaper to the partial,
+     * exactly as the previous include did.
+     *
+     * @param string $template
+     * @return string
+     */
+    public function renderFragment(string $template): string
+    {
+        return $this->fetchView($this->getTemplateFile($template));
+    }
+
+    /**
      * Server-resolved selection for a pre-filled finder (e.g. the Find results
      * page reached via ?make_id=… or /parts/bmw/…). The finder JS hydrates IDs
      * from the URL but not the NAMES, so without this the pre-filled finder shows
