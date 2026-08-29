@@ -97,9 +97,9 @@ $eagerLoadImagesCount = 4;
                                         );
                                     } catch (\Throwable $e) { $itemHtml = ''; }
                                 }
-                                if (trim($itemHtml) !== ''):
-                                    echo /* @noEscape */ $itemHtml;
-                                else:
+                                if (trim($itemHtml) !== ''): ?>
+                                    <?= /* @noEscape */ $itemHtml ?>
+                                <?php else:
                                 /* Non-Hyva (Luma / custom theme) fallback. The Hyva
                                    ProductListItem ViewModel only exists under Hyva, so
                                    without this branch the grid is empty on every other

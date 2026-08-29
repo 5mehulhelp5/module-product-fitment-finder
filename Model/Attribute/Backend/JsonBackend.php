@@ -27,6 +27,21 @@ class JsonBackend extends AbstractBackend
     /** @var array<int,string>|null */
     private ?array $modelMap = null;
 
+    private MakeCollectionFactory $makeCollectionFactory;
+    private ModelCollectionFactory $modelCollectionFactory;
+
+    /**
+     * @param MakeCollectionFactory $makeCollectionFactory
+     * @param ModelCollectionFactory $modelCollectionFactory
+     */
+    public function __construct(
+        MakeCollectionFactory $makeCollectionFactory,
+        ModelCollectionFactory $modelCollectionFactory
+    ) {
+        $this->makeCollectionFactory = $makeCollectionFactory;
+        $this->modelCollectionFactory = $modelCollectionFactory;
+    }
+
     public function beforeSave($object)
     {
         $code = $this->getAttribute()->getAttributeCode();
@@ -115,29 +130,33 @@ class JsonBackend extends AbstractBackend
     }
 
     /**
-     * EAV attribute backends can be rebuilt from a cached attribute without their
-     * constructor running, so injected dependencies are unreliable here. Resolve
-     * the collection factories lazily via ObjectManager (the same pattern the
-     * form modifier uses for its option sources). Cached per instance.
+     * Resolve make names from the vehicle catalogue, cached per instance.
+     *
+     * @param int $id
+     * @return string
      */
     private function getMakeName(int $id): string
     {
         if ($this->makeMap === null) {
             $this->makeMap = [];
-            $factory = \Magento\Framework\App\ObjectManager::getInstance()->get(MakeCollectionFactory::class);
-            foreach ($factory->create() as $m) {
+            foreach ($this->makeCollectionFactory->create() as $m) {
                 $this->makeMap[(int)$m->getId()] = (string)$m->getData('name');
             }
         }
         return $this->makeMap[$id] ?? '';
     }
 
+    /**
+     * Resolve model names from the vehicle catalogue, cached per instance.
+     *
+     * @param int $id
+     * @return string
+     */
     private function getModelName(int $id): string
     {
         if ($this->modelMap === null) {
             $this->modelMap = [];
-            $factory = \Magento\Framework\App\ObjectManager::getInstance()->get(ModelCollectionFactory::class);
-            foreach ($factory->create() as $m) {
+            foreach ($this->modelCollectionFactory->create() as $m) {
                 $this->modelMap[(int)$m->getId()] = (string)$m->getData('name');
             }
         }
