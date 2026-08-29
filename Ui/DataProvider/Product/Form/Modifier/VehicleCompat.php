@@ -62,17 +62,7 @@ class VehicleCompat extends AbstractModifier
         $productId = $this->locator->getProduct()->getId();
         if (!$productId) return $data;
 
-        $raw = $this->locator->getProduct()->getData(self::FIELD_NAME);
-        $rows = [];
-
-        if (is_string($raw) && $raw !== '') {
-            $decoded = json_decode($raw, true);
-            if (is_array($decoded)) {
-                $rows = $this->flattenGroupedShape($decoded);
-            }
-        } elseif (is_array($raw)) {
-            $rows = $this->flattenGroupedShape($raw);
-        }
+        $rows = $this->getFlatRowsForProduct();
 
         if (!isset($data[$productId]['product'])) {
             $data[$productId]['product'] = [];
@@ -130,6 +120,47 @@ class VehicleCompat extends AbstractModifier
         return $flat;
     }
 
+    /**
+     * Flattened fitment rows for the CURRENT product (single source of truth,
+     * used by both modifyData and the toolbar component config).
+     *
+     * @return array<int,array<string,mixed>>
+     */
+    private function getFlatRowsForProduct(): array
+    {
+        $raw = $this->locator->getProduct()->getData(self::FIELD_NAME);
+        if (is_string($raw) && $raw !== '') {
+            $decoded = json_decode($raw, true);
+            return is_array($decoded) ? $this->flattenGroupedShape($decoded) : [];
+        }
+        if (is_array($raw)) {
+            return $this->flattenGroupedShape($raw);
+        }
+        return [];
+    }
+
+    /**
+     * Same flat rows, shaped exactly like the client-side CSV importer injects
+     * them (record_id + selected). The toolbar JS paints these into the
+     * dynamicRows on load: Magento's own dataScope binding leaves a nested
+     * "doubled" shape at data.product.vehicle_compat_data on reopen, so
+     * recordData never links to the saved rows and the grid comes up empty
+     * even though the data is present. Painting through recordData() — the
+     * exact path a CSV import already uses successfully — is the reliable fix.
+     *
+     * @return array<int,array<string,mixed>>
+     */
+    private function getSavedRowsForToolbar(): array
+    {
+        $out = [];
+        foreach ($this->getFlatRowsForProduct() as $i => $row) {
+            $row['record_id'] = $i;
+            $row['selected']  = 0;
+            $out[] = $row;
+        }
+        return $out;
+    }
+
     public function modifyMeta(array $meta): array
     {
         $meta = array_replace_recursive($meta, [
@@ -173,6 +204,11 @@ class VehicleCompat extends AbstractModifier
                         // guarantees the CSRF form key is always valid.
                         'formKey'         => $this->formKey->getFormKey(),
                         'dynamicRowsName' => 'product_form.product_form.' . self::GROUP_NAME . '.' . self::FIELD_NAME,
+                        // Server-rendered saved rows; the toolbar JS paints them
+                        // into the dynamicRows on load (the dataScope binding
+                        // alone leaves the grid empty on reopen — see
+                        // getSavedRowsForToolbar()).
+                        'savedRows'       => $this->getSavedRowsForToolbar(),
                         'sortOrder'       => 5,
                     ],
                 ],

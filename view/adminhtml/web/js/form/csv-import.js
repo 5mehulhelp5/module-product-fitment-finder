@@ -21,6 +21,7 @@ define([
             importUrl: '',
             formKey: '',           /* server-injected admin form key (CSRF) */
             dynamicRowsName: '',   /* full UI name of the dynamicRows component */
+            savedRows: [],         /* server-rendered saved fitment rows to paint on load */
             tracks: {
                 status:        true,
                 rowsCount:     true,
@@ -48,6 +49,7 @@ define([
                 var dr = registry.get(self.dynamicRowsName);
                 if (dr && dr.recordData) {
                     self._dr = dr;
+                    self._paintSavedRows();
                     /* Recompute counts whenever recordData changes */
                     dr.recordData.subscribe(function () { self._refreshCounts(); });
                     self._refreshCounts();
@@ -55,6 +57,39 @@ define([
                 }
                 if (++attempts < 60) setTimeout(poll, 100);
             })();
+        },
+
+        /**
+         * Paint the server-rendered saved rows into the dynamicRows on load.
+         * Magento's dataScope binding leaves a nested/"doubled" shape at
+         * data.product.vehicle_compat_data on reopen, so recordData never links
+         * to the saved rows and the grid comes up empty. We push them through
+         * recordData() directly — the exact path a CSV import already uses — but
+         * ONLY when the grid genuinely has no rows, so we never clobber a live
+         * edit or double up if Magento ever loads them itself.
+         */
+        _paintSavedRows: function () {
+            if (!this._dr || !this.savedRows || !this.savedRows.length) return;
+            var current = this._dr.recordData() || [];
+            /* Paint whenever the grid holds fewer rows than the DB actually has:
+               covers both the empty case and the malformed "doubled"/partial
+               shape. Runs once at form-open, before any edit, so it can't
+               clobber in-progress work. */
+            if (current.length >= this.savedRows.length) return;
+            /* Fresh copies + sequential record_id so dynamicRows keys them cleanly */
+            var rows = this.savedRows.map(function (r, i) {
+                return {
+                    make_id:    r.make_id,
+                    make_name:  r.make_name,
+                    model_id:   r.model_id,
+                    model_name: r.model_name,
+                    years:      (r.years || []).slice(),
+                    selected:   0,
+                    record_id:  i
+                };
+            });
+            this._dr.recordData(rows);
+            try { this._dr.reload(); } catch (e) { /* ignore */ }
         },
 
         _refreshCounts: function () {
